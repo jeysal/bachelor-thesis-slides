@@ -1,16 +1,7 @@
-// Import React
 import React from "react";
-
-// Import Spectacle Core tags
-import { Deck, Heading, Slide, Text } from "spectacle";
-
-// Import theme
 import createTheme from "spectacle/lib/themes/default";
-
-// Import custom styles
+import { Appear, CodePane, Deck, Heading, Notes, Slide, Text } from "spectacle";
 import "./index.css";
-
-// Require CSS
 require("normalize.css");
 
 const theme = createTheme(
@@ -25,6 +16,12 @@ const theme = createTheme(
     secondary: "Helvetica"
   }
 );
+const H1 = props => (
+  <Heading size={4} caps margin="0 0 2rem" textColor="primary" {...props} />
+);
+const H2 = props => (
+  <Heading size={5} margin="0 0 7rem" textColor="primary" {...props} />
+);
 
 /*
 
@@ -32,9 +29,8 @@ Structure:
 
 * what is mocking (by most definitions)
 ** first introduce assertions (pretty much the most important test helpers)
-** mocking extends stubbing
 ** show stubbing example
-** extends stubbing by special assertions
+** mocking extends stubbing by special assertions
 ** show extension mocking example
 * typical usage of mocking libraries
 ** explain components such as expects, withArgs
@@ -136,9 +132,94 @@ export default class Presentation extends React.Component {
             <img src="github-logo.png" alt="Github Logo" className="inline" />{" "}
             jeysal
           </Text>
+          <Notes>
+            <p>Introduce speaker & topic</p>
+            <p>
+              That's a lot of words in the title - we'll do this step by step.
+            </p>
+            <p>What is mocking?</p>
+          </Notes>
         </Slide>
         <Slide bgColor="secondary">
-          <Text textColor="primary">TODO</Text>
+          <H1>Test helpers</H1>
+          <H2>Assertions</H2>
+          <CodePane
+            textSize="3rem"
+            lang="js"
+            source={`expect(1).to.equal(1);
+assert(1 === 1);`}
+          />
+          <Appear>
+            <div>
+              <CodePane
+                textSize="1.5rem"
+                lang="js"
+                source="expect([1, 2]).to.be.an('array').that.does.not.include(3);"
+              />
+            </div>
+          </Appear>
+          <Notes>
+            <p>
+              To understand mocking, let's first look at some other, more basic
+              helpers used in automated software testing.
+            </p>
+            <p>
+              Assertions encode what is called the test oracle in literature.
+            </p>
+            <p>Explain</p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>Test helpers</H1>
+          <H2>Stubs</H2>
+          <CodePane
+            textSize="1.5rem"
+            lang="js"
+            source={`const subtract = add => (a, b) => add(a, -b);
+
+const addStub = (a, b) => (a === 3 && b === -2 ? 1 : 0);
+
+assert(subtract(addStub)(3, 2) === 1);`}
+          />
+          <Notes>
+            <p>Stubs replace components that the test subject depends on.</p>
+            <p>
+              A stub returns a predefined value when the test subject calls it.
+            </p>
+            <p>Contrived example: subtract is SUT, add is dependency</p>
+            <p>Explain SUT implementation</p>
+            <p>
+              To test `subtract`, we pass it our `addStub` as its `add`
+              dependency and call it with 3, 2.
+            </p>
+            <p>
+              `addStub` will be called with 3, -2 and knows to return 1 for
+              those exact parameters, despite not being a full implementation of
+              `add`.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>Test helpers</H1>
+          <H2>Mocks</H2>
+          <CodePane
+            textSize="1.5rem"
+            lang="js"
+            source={`const subtract = add => (a, b) => add(a, -b);
+
+const addCalls = [];
+const addMock = (a, b) => (
+  addCalls.push({ a, b }), a === 3 && b === -2 ? 1 : 0
+);
+
+assert(subtract(addMock)(3, 2) === 1);
+assert.deepStrictEqual(addCalls, [{ a: 3, b: -2 }]);`}
+          />
+          <Notes>
+            <p>Mocking extends stubbing by special assertions.</p>
+            <p>We assert that the mock function is called in a certain way.</p>
+            <p>Explain example</p>
+          </Notes>
         </Slide>
       </Deck>
     );
