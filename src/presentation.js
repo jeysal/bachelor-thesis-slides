@@ -140,8 +140,8 @@ export default class Presentation extends React.Component {
             <p>What is mocking?</p>
           </Notes>
         </Slide>
-        <Slide bgColor="secondary">
-          <H1>Test helpers</H1>
+        <Slide>
+          <H1 textColor="secondary">Test helpers</H1>
           <Notes>
             <p>
               To understand mocking, let's first look at some other, more basic
@@ -248,8 +248,8 @@ myMock.verify();`}
             </p>
           </Notes>
         </Slide>
-        <Slide bgColor="secondary">
-          <H1>The Spock Framework</H1>
+        <Slide>
+          <H1 textColor="secondary">The Spock Framework</H1>
           <Notes>
             <p>
               Look towards other tools out there - Spock Framework for the
