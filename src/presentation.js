@@ -331,6 +331,51 @@ res == true`}
             <p>Explain</p>
           </Notes>
         </Slide>
+        <Slide>
+          <H1 textColor="secondary">spockjs</H1>
+          <Notes>
+            <p>What exactly did we build in the thesis?</p>
+            <p>
+              spockjs is a tool that already implements some of the capabilities
+              of the Spock Framework for the JavaScript ecosystem.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>spockjs</H1>
+          <H2>Assertion blocks</H2>
+          <CodePane
+            textSize="2rem"
+            lang="js"
+            source={`expect: 'a' + 'b' === 'ab';
+
+expect: {
+  'a' + 'b' === 'ab';
+  1 < 2;
+}`}
+          />
+          <Notes>
+            <p>This is what spockjs can do so far</p>
+            <p>Look mostly similar to assertions in the Spock Framework.</p>
+            <p>
+              For the thesis, I added support to so-called 'interaction blocks'
+              to spockjs
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>spockjs</H1>
+          <H2>Interaction blocks</H2>
+          <CodePane
+            textSize="2rem"
+            lang="js"
+            source={`mock: 1 * receive('msg') >> true;
+
+expect: publish('msg') === true;
+
+verify: receive;`}
+          />
+        </Slide>
       </Deck>
     );
   }
