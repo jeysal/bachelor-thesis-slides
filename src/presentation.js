@@ -282,6 +282,55 @@ myMock.verify();`}
             <p>Pretty cool but not a huge win...</p>
           </Notes>
         </Slide>
+        <Slide bgColor="secondary">
+          <H1>The Spock Framework</H1>
+          <H2>Stubs</H2>
+          <CodePane
+            textSize="2rem"
+            lang="js"
+            source={`setup:
+subscriber.receive("msg") >> true
+
+expect:
+subscriber.receive("msg") == true`}
+          />
+          <Notes>
+            <p>Explain</p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>The Spock Framework</H1>
+          <H2>Mocks</H2>
+          <CodePane
+            textSize="2rem"
+            lang="js"
+            source={`when:
+publisher.publish("msg")
+
+then:
+1 * subscriber.receive("msg")`}
+          />
+          <Notes>
+            <p>Explain</p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>The Spock Framework</H1>
+          <H2>Combined</H2>
+          <CodePane
+            textSize="2rem"
+            lang="js"
+            source={`when:
+def res = publisher.publish("msg")
+
+then:
+1 * subscriber.receive("msg") >> true
+res == true`}
+          />
+          <Notes>
+            <p>Explain</p>
+          </Notes>
+        </Slide>
       </Deck>
     );
   }
