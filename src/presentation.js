@@ -142,6 +142,15 @@ export default class Presentation extends React.Component {
         </Slide>
         <Slide bgColor="secondary">
           <H1>Test helpers</H1>
+          <Notes>
+            <p>
+              To understand mocking, let's first look at some other, more basic
+              helpers used in automated software testing.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>Test helpers</H1>
           <H2>Assertions</H2>
           <CodePane
             textSize="3rem"
@@ -159,10 +168,6 @@ assert(1 === 1);`}
             </div>
           </Appear>
           <Notes>
-            <p>
-              To understand mocking, let's first look at some other, more basic
-              helpers used in automated software testing.
-            </p>
             <p>
               Assertions encode what is called the test oracle in literature.
             </p>
@@ -219,6 +224,62 @@ assert.deepStrictEqual(addCalls, [{ a: 3, b: -2 }]);`}
             <p>Mocking extends stubbing by special assertions.</p>
             <p>We assert that the mock function is called in a certain way.</p>
             <p>Explain example</p>
+            <p>Show boilerplate</p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>Test helpers</H1>
+          <H2>Mocking libraries</H2>
+          <CodePane
+            textSize="1.5rem"
+            lang="js"
+            source={`const myMock = mock(myApi).expects("method")
+                          .withArgs(42, 1337);
+
+myApi.method(42, 1337);
+
+myMock.verify();`}
+          />
+          <Notes>
+            <p>Explain (particularly expects & withArgs)</p>
+            <p>
+              Declaration is unintuitive - why can we not use the ordinary
+              method call syntax of our language?
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>The Spock Framework</H1>
+          <Notes>
+            <p>
+              Look towards other tools out there - Spock Framework for the
+              Apache Groovy Language
+            </p>
+            <p>
+              Introduces a completely different look and feel for all the
+              aspects of testing mentioned.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>The Spock Framework</H1>
+          <H2>Assertions</H2>
+          <CodePane
+            textSize="3rem"
+            lang="js"
+            source={`expect:
+1 + 2 == 3`}
+          />
+          <Notes>
+            <p>
+              Explain `expect` block - evaluates the expression to check whether
+              it is truthy.
+            </p>
+            <p>
+              Obviously this is not something a runtime library can do, this
+              requires some sort of custom compilation.
+            </p>
+            <p>Pretty cool but not a huge win...</p>
           </Notes>
         </Slide>
       </Deck>
