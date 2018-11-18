@@ -292,7 +292,7 @@ myMock.verify();`}
 subscriber.receive("msg") >> true
 
 expect:
-subscriber.receive("msg") == true`}
+publisher.publish("msg") == true`}
           />
           <Notes>
             <p>Explain</p>
