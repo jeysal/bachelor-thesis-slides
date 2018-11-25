@@ -17,10 +17,10 @@ const theme = createTheme(
   }
 );
 const H1 = props => (
-  <Heading size={4} caps margin="0 0 2rem" textColor="primary" {...props} />
+  <Heading size={5} caps margin="0 0 2rem" textColor="primary" {...props} />
 );
 const H2 = props => (
-  <Heading size={5} margin="0 0 7rem" textColor="primary" {...props} />
+  <Heading size={6} margin="0 0 5rem" textColor="primary" {...props} />
 );
 
 /*
@@ -375,6 +375,49 @@ expect: publish('msg') === true;
 
 verify: receive;`}
           />
+          <Notes>
+            <p>Explain</p>
+            <p>
+              To see how we could implement interaction blocks, let's first look
+              at how assertion blocks are implemented.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>Assertion block implementation</H1>
+          <H2>Code</H2>
+          <CodePane
+            textSize="3rem"
+            lang="js"
+            source={`expect: true;
+// ==>
+expect: assert(true);`}
+          />
+          <Notes>
+            <p>The code transformation for assertion blocks is quite simple.</p>
+            <p>Not gonna show the code implementing the transform</p>
+            <p>Explain</p>
+            <p>
+              There's a few more aspects to this, such as importing this assert
+              function from somewhere, but the relevant bit is just the
+              transformation.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide>
+          <H1 textColor="secondary">Assertion block implementation</H1>
+          <H2 textColor="secondary" margin="0 0 2rem">
+            AST
+          </H2>
+          <img
+            src="assertion-block-ast.png"
+            alt="Assertion block AST"
+            style={{ height: "30rem" }}
+          />
+          <Notes>
+            <p>Explain base structure</p>
+            <p>Explain CallExpression insertion</p>
+          </Notes>
         </Slide>
       </Deck>
     );
