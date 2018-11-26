@@ -419,6 +419,37 @@ expect: assert(true);`}
             <p>Explain CallExpression insertion</p>
           </Notes>
         </Slide>
+        <Slide bgColor="secondary">
+          <H1>Interaction block parsing</H1>
+          <H2>Input code</H2>
+          <CodePane
+            textSize="2rem"
+            lang="js"
+            source={`MockInteractionDeclaration:
+cardinality * call;
+
+StubInteractionDeclaration:
+call >> returnValue;
+
+CombinedInteractionDeclaration:
+cardinality * call >> returnValue;`}
+          />
+          <Notes>
+            <p>Now for interaction blocks</p>
+            <p>Already showed an example interaction declaration</p>
+            <p>
+              This is the structure of the three different kinds of interaction
+              declarations
+            </p>
+            <p>Explain</p>
+          </Notes>
+        </Slide>
+        <Slide>
+          <H1>Interaction block parsing</H1>
+          <H2>Input AST</H2>
+          TODO fig 14
+          <Notes>TODO</Notes>
+        </Slide>
       </Deck>
     );
   }
