@@ -1,6 +1,16 @@
 import React from "react";
 import createTheme from "spectacle/lib/themes/default";
-import { Appear, CodePane, Deck, Heading, Notes, Slide, Text } from "spectacle";
+import {
+  Appear,
+  CodePane,
+  Deck,
+  Heading,
+  List,
+  ListItem,
+  Notes,
+  Slide,
+  Text
+} from "spectacle";
 import "./index.css";
 require("normalize.css");
 
@@ -88,14 +98,14 @@ Structure:
 ** with full access to the AST we can generate useful error messages w/ original code snippet etc
 
 * however, it also has some major issues compared to runtime dispatch:
-** some libraries do not provide adequate functions for spockjs mocking directly
+** generating code like a human would write it sound nice, but in pratice some libraries do not provide adequate functions for spockjs mocking directly
 *** so we have to implement a sort of runtime that remembers invocations
     and compares them to interaction declarations
 *** this runtime is generated in huge code string template (show) without type checking or anything
 *** this requires so much effort that it severely impedes our ability to easily support many libraries
 *** runtime dispatch has this code as ordinary modules executed at runtime, avoiding problems
 
-* fundamentally, this is a problem of information loss
+* fundamentally, this is a problem of information loss (perhaps some sort of graph for visualization)
 ** during the transition from compile time to runtime, a lot of information from the AST is lost
 *** at compile time,
 **** we have access to everything and can implement any conceivable functionality
@@ -334,7 +344,7 @@ res == true`}
         <Slide>
           <H1 textColor="secondary">spockjs</H1>
           <Notes>
-            <p>What exactly did we build in the thesis?</p>
+            <p>What exactly did I build in the thesis?</p>
             <p>
               spockjs is a tool that already implements some of the capabilities
               of the Spock Framework for the JavaScript ecosystem.
@@ -502,6 +512,175 @@ expect: assert(true);`}
               declarations?
             </p>
           </Notes>
+        </Slide>
+        <Slide bgColor="secondary" textColor="primary">
+          <H1>Mocking library abstraction</H1>
+          <H2>Reasons</H2>
+          <List>
+            <ListItem textSize="2rem">
+              simultaneously use the mocking library directly
+            </ListItem>
+            <ListItem textSize="2rem">
+              no need for anyone to switch their mocking library
+            </ListItem>
+            <ListItem textSize="2rem">
+              possible escape route to stop using spockjs
+            </ListItem>
+          </List>
+          <Notes>
+            <p>
+              This is where the "abstraction of JS mocking libraries" from the
+              title comes in.
+            </p>
+            <p>
+              Users should be able to use this with their favorite mocking
+              library.
+            </p>
+            <p>Why?</p>
+            <p>
+              Distinct features of the mocking library only available with
+              direct usage, so that should be available alongside use through
+              spockjs.
+            </p>
+            <p>
+              Better adoptability: No time-consuming library switch required to
+              introduce spockjs.
+            </p>
+            <p>Explain escape hatch</p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary" textColor="primary">
+          <H1>Mocking library abstraction</H1>
+          <H2>Options</H2>
+          <List>
+            <ListItem>Direct compilation</ListItem>
+            <ListItem>Runtime dispatch</ListItem>
+          </List>
+          <Notes>
+            <p>
+              There are two options to achieve support for multiple mocking
+              libraries.
+            </p>
+            <p>
+              I implemented both of those strategies for the thesis and used
+              them to provide support for the Sinon.JS and Jest mocking
+              libraries.
+            </p>
+            <p>
+              No time to get into the implementation details, but I'll give a
+              brief overview.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>Mocking library abstraction</H1>
+          <H2>Direct compilation</H2>
+          <CodePane
+            textSize="2rem"
+            lang="js"
+            source={`mock: 1 * fn();
+verify: fn;
+// ==>
+expect(fn).withoutArgs().times(1);
+verify(fn);`}
+          />
+          <Notes>
+            <p>Input and output code for a fictional mocking library</p>
+            <p>Compiler plugin knows the API of the mocking library in use.</p>
+            <p>
+              Explain: Generates calls to the mocking library the same way a
+              human would write them.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>Mocking library abstraction</H1>
+          <H2 margin="0 0 2rem">Runtime dispatch</H2>
+          <CodePane
+            textSize="2rem"
+            lang="js"
+            source={`mock: 1 * fn();
+verify: fn;
+// ==>
+interactionRuntimeAdapter.declare({
+  kind: 'mock',
+  mockObject: fn,
+  args: [],
+  cardinality: 1,
+});
+interactionRuntimeAdapter.verify(mock)`}
+          />
+          <Notes>
+            <p>
+              Generated code looks the same regardless of mocking library in
+              use.
+            </p>
+            <p>
+              Only the interaction runtime adapter implementation is swapped out
+              by importing it from a different module.
+            </p>
+            <p>
+              The adapter receives the serialized interaction declaration as its
+              argument and then knows how to convert that into calls to the
+              mocking library and makes those calls internally.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>Mocking library abstraction</H1>
+          <H2>Direct compilation upsides</H2>
+          <Notes>
+            <p>
+              Direct compilation is conceptually quite straightforward / no
+              extra layer of abstraction / just a more complex version of
+              assertion blocks
+            </p>
+            <p>
+              Can also support the aforementioned escape hatch, although this
+              can get a bit ugly, as we will see.
+            </p>
+            <p>
+              When generating the code we have full access to the AST that we
+              can use e.g. to generate useful error messages w/ original code
+              snippets.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
+          <H1>Mocking library abstraction</H1>
+          <H2>Direct compilation problem</H2>
+          <Appear>
+            <div>
+              <CodePane
+                textSize="1rem"
+                lang="js"
+                source={`const verify = template(\`
+  // sanity check ...
+  (MOCK[\${symbol}] || [])
+    .filter(({ cardinality }) => cardinality != null)
+    .forEach(({ args: expected, cardinality: expectedTimes }) => {
+      const __spockjs_actualTimes = MOCK.mock.calls.filter(actual =>
+        \${deepStrictEqual}([...actual], [...expected]),
+      ).length;
+      if (__spockjs_actualTimes !== expectedTimes) {
+        const __spockjs_args = \${prettyFormat}(expected);
+        throw new Error(
+          \\\`Expected \\\${expectedTimes} call(s) to mock '\\\${MOCK_NAME}' \\\` +
+            \\\`with arguments \\\${__spockjs_args}, \\\` +
+            \\\`but received \\\${__spockjs_actualTimes} such call(s).\\\`,
+        );
+      }
+    });
+\`);`}
+              />
+            </div>
+          </Appear>
+          <Notes>
+            <p>TODO</p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary" textColor="primary">
+          TODO information loss
         </Slide>
       </Deck>
     );
