@@ -407,7 +407,7 @@ expect: assert(true);`}
         <Slide>
           <H1 textColor="secondary">Assertion block implementation</H1>
           <H2 textColor="secondary" margin="0 0 2rem">
-            AST
+            Input and <span style={{ color: "teal" }}>output</span> AST
           </H2>
           <img
             src="assertion-block-ast.png"
@@ -422,20 +422,25 @@ expect: assert(true);`}
         <Slide bgColor="secondary">
           <H1>Interaction block parsing</H1>
           <H2>Input code</H2>
+          <div style={{ color: "teal" }}>MockInteractionDeclaration:</div>
+          <CodePane textSize="2rem" lang="js" source={`cardinality * call;`} />
+          <br />
+          <div style={{ color: "magenta" }}>StubInteractionDeclaration:</div>
+          <CodePane textSize="2rem" lang="js" source={`call >> returnValue;`} />
+          <br />
+          <div style={{ color: "violet" }}>CombinedInteractionDeclaration:</div>
           <CodePane
             textSize="2rem"
             lang="js"
-            source={`MockInteractionDeclaration:
-cardinality * call;
-
-StubInteractionDeclaration:
-call >> returnValue;
-
-CombinedInteractionDeclaration:
-cardinality * call >> returnValue;`}
+            source={`cardinality * call >> returnValue;`}
           />
           <Notes>
             <p>Now for interaction blocks</p>
+            <p>
+              There's the interaction verification block, but that's rather
+              simple
+            </p>
+            <p>Interaction declaration blocks are the interesting part</p>
             <p>Already showed an example interaction declaration</p>
             <p>
               This is the structure of the three different kinds of interaction
@@ -445,10 +450,58 @@ cardinality * call >> returnValue;`}
           </Notes>
         </Slide>
         <Slide>
+          <H1 textColor="secondary">Interaction block parsing</H1>
+          <H2 textColor="secondary" margin="0 0 2rem">
+            Input AST
+          </H2>
+          <img
+            src="interaction-block-ast.png"
+            alt="Interaction block AST"
+            style={{ height: "30rem" }}
+          />
+          <Notes>
+            <p>Explain</p>
+            <p>Explain CallExpression</p>
+            <p>We're interested in the leafs</p>
+            <p>Explain Parsing</p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary">
           <H1>Interaction block parsing</H1>
-          <H2>Input AST</H2>
-          TODO fig 14
-          <Notes>TODO</Notes>
+          <H2 margin="0 0 2rem">Tagged union InteractionDeclaration</H2>
+          <CodePane
+            textSize="1.2rem"
+            lang="rust"
+            source={`enum InteractionDeclaration {
+  Mock {
+    mockObject: Expression,
+    args: [Expression],
+    cardinality: Expression,
+  },
+  Stub {
+    mockObject: Expression,
+    args: [Expression],
+    returnValue: Expression,
+  },
+  Combined {
+    mockObject: Expression,
+    args: [Expression],
+    cardinality: Expression,
+    returnValue: Expression,
+  },
+}`}
+          />
+          <Notes>
+            <p>This is the data structure the parser generates</p>
+            <p>
+              Explain - interaction declaration is either mock or stub or
+              combined...
+            </p>
+            <p>
+              But now what is the output code we generate for interaction
+              declarations?
+            </p>
+          </Notes>
         </Slide>
       </Deck>
     );
