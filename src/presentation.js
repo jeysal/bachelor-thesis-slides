@@ -134,21 +134,29 @@ Structure:
 */
 
 export default class Presentation extends React.Component {
+  renderIntroOutro(notes) {
+    return (
+      <Slide bgColor="secondary">
+        <Heading size={6} caps textColor="primary">
+          Compile-time abstraction of JavaScript mocking libraries powering a
+          domain-specific language for interaction testing
+        </Heading>
+        <Text margin="2rem 0 0" textSize="2.5rem" textColor="primary">
+          Tim Seckinger
+        </Text>
+        <Text margin="0.5rem 0 0" textSize="2rem" textColor="primary">
+          <img src="github-logo.png" alt="Github Logo" className="inline" />{" "}
+          jeysal
+        </Text>
+        {notes}
+      </Slide>
+    );
+  }
+
   render() {
     return (
       <Deck transition={["slide"]} transitionDuration={500} theme={theme}>
-        <Slide bgColor="secondary">
-          <Heading size={6} caps textColor="primary">
-            Compile-time abstraction of JavaScript mocking libraries powering a
-            domain-specific language for interaction testing
-          </Heading>
-          <Text margin="2rem 0 0" textSize="2.5rem" textColor="primary">
-            Tim Seckinger
-          </Text>
-          <Text margin="0.5rem 0 0" textSize="2rem" textColor="primary">
-            <img src="github-logo.png" alt="Github Logo" className="inline" />{" "}
-            jeysal
-          </Text>
+        {this.renderIntroOutro(
           <Notes>
             <p>Introduce speaker & topic</p>
             <p>
@@ -156,7 +164,7 @@ export default class Presentation extends React.Component {
             </p>
             <p>What is mocking?</p>
           </Notes>
-        </Slide>
+        )}
         <Slide>
           <H1 textColor="secondary">Test helpers</H1>
           <Notes>
@@ -189,6 +197,7 @@ assert(1 === 1);`}
               Assertions encode what is called the test oracle in literature.
             </p>
             <p>Explain</p>
+            <p>click</p>
           </Notes>
         </Slide>
         <Slide bgColor="secondary">
@@ -374,8 +383,9 @@ expect: {
           <Notes>
             <p>This is what spockjs can do so far</p>
             <p>Look mostly similar to assertions in the Spock Framework.</p>
+            <p>Explain</p>
             <p>
-              For the thesis, I added support to so-called 'interaction blocks'
+              For the thesis, I added support for so-called 'interaction blocks'
               to spockjs
             </p>
           </Notes>
@@ -540,7 +550,7 @@ expect: assert(true);`}
               title comes in.
             </p>
             <p>
-              Users should be able to use this with their favorite mocking
+              Users should be able to use spockjs with their favorite mocking
               library.
             </p>
             <p>Why?</p>
@@ -629,7 +639,7 @@ interactionRuntimeAdapter.verify(mock)`}
             <p>
               The adapter receives the serialized interaction declaration as its
               argument and then knows how to convert that into calls to the
-              mocking library and makes those calls internally.
+              mocking library and makes those calls internally at runtime.
             </p>
           </Notes>
         </Slide>
@@ -693,7 +703,7 @@ interactionRuntimeAdapter.verify(mock)`}
               remembers invocations and compares them to the declarations when
               verifying.
               <p>
-                Runtime is generated in huge code string templating without type
+                Runtime is generated in huge code string template without type
                 checking or any tooling support at all (click).
               </p>
               <p>
@@ -802,6 +812,7 @@ interactionRuntimeAdapter.verify(mock)`}
             </p>
           </Notes>
         </Slide>
+        {this.renderIntroOutro()}
       </Deck>
     );
   }
