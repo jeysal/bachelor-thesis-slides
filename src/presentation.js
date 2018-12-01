@@ -8,7 +8,14 @@ import {
   List,
   ListItem,
   Notes,
+  S,
   Slide,
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderItem,
+  TableItem,
+  TableRow,
   Text
 } from "spectacle";
 import "./index.css";
@@ -676,11 +683,124 @@ interactionRuntimeAdapter.verify(mock)`}
             </div>
           </Appear>
           <Notes>
-            <p>TODO</p>
+            <p>
+              Problem is: Generating code like a human would write it sounds
+              nice, but in practice some libraries do not provide adequate
+              functions for spockjs mocking.
+            </p>
+            <p>
+              For such libraries, we have to implement a sort of runtime that
+              remembers invocations and compares them to the declarations when
+              verifying.
+              <p>
+                Runtime is generated in huge code string templating without type
+                checking or any tooling support at all (click).
+              </p>
+              <p>
+                A lot of effort - impedes our ability to easily support many
+                libraries.
+              </p>
+              <p>
+                Runtime dispatch has this code as ordinary modules in the
+                adapter executed at runtime.
+              </p>
+            </p>
           </Notes>
         </Slide>
         <Slide bgColor="secondary" textColor="primary">
-          TODO information loss
+          <H1>Information loss</H1>
+          <H2>Tradeoff</H2>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHeaderItem>
+                  <S type="bold">Work timing</S>
+                </TableHeaderItem>
+                <TableHeaderItem>
+                  <S type="bold">Power</S>
+                </TableHeaderItem>
+                <TableHeaderItem>
+                  <S type="bold">Ease</S>
+                </TableHeaderItem>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableItem>compile time</TableItem>
+                <TableItem>
+                  <span style={{ color: "green" }}>high</span>
+                </TableItem>
+                <TableItem>
+                  <span style={{ color: "red" }}>low</span>
+                </TableItem>
+              </TableRow>
+              <TableRow>
+                <TableItem>runtime</TableItem>
+                <TableItem>
+                  <span style={{ color: "red" }}>low</span>
+                </TableItem>
+                <TableItem>
+                  <span style={{ color: "green" }}>high</span>
+                </TableItem>
+              </TableRow>
+            </TableBody>
+          </Table>
+          <Notes>
+            <p>
+              Fundamentally, this is a problem of information loss. During the
+              transition from compile time to runtime, a lot of information from
+              the AST is lost.
+            </p>
+            <p>
+              Compile time: access to everything, can implement any conceivable
+              functionality - but using the information is annoying because it's
+              all AST transformation and code generation.
+            </p>
+            <p>
+              Runtime: We have access to exactly the information we serialized
+              in our compile step - but we can use it very easily.
+            </p>
+            <p>
+              Through that serialization, we can control how much information is
+              lost, but every extra piece of information preserved comes with
+              more implementation effort.
+            </p>
+          </Notes>
+        </Slide>
+        <Slide bgColor="secondary" textColor="primary">
+          <H1>Information loss</H1>
+          <H2>Advice</H2>
+          <p>
+            Do work at{" "}
+            <S type="italic" textColor="tertiary">
+              compile time
+            </S>{" "}
+            if a lot of detail about the original code is required.
+          </p>
+          <p>
+            Do work at{" "}
+            <S type="italic" textColor="tertiary">
+              runtime
+            </S>{" "}
+            if only a few select pieces of information need to be extracted.
+          </p>
+          <Notes>
+            <p>As a rule of thumb for applications like spockjs:</p>
+            <p>
+              If a lot of detail required, avoid having to serialize all of that
+              by doing the work immediately at compile time.
+            </p>
+            <p>
+              If just a few select pieces required (like in spockjs), serialize
+              that data at compile time and save the complex logic of processing
+              that data for runtime.
+            </p>
+            <p>
+              In special cases, one might consider a hybrid approach where
+              runtime dispatch is just a special case of direct compilation,
+              which is also mentioned in the paper.
+            </p>
+          </Notes>
         </Slide>
       </Deck>
     );
