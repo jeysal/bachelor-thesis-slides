@@ -2,7 +2,7 @@
 
 > Slides for my bachelor thesis presentation
 
-[Take a look at the slides](https://jeysal.github.io/bachelor-thesis-slides/) or see
+[Take a look at the slides](https://jeys.al/bachelor-thesis-slides/) or see
 [jeysal/bachelor-thesis](https://github.com/jeysal/bachelor-thesis/)
 for the accompanying bachelor thesis paper.
 
